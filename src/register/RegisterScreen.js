@@ -13,13 +13,16 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleRegister = () => {
-    console.log("register:");
+    navigation.navigate("Map");
   };
 
   const cover = require("../../assets/cover.jpg");
 
   return (
     <ImageBackground source={cover} resizeMode="cover" style={styles.image}>
+      <Text style={[styles.back]} onPress={() => navigation.navigate("Login")}>
+        back
+      </Text>
       <Text style={[styles.title]}>Registrar</Text>
       <View style={[styles.content]}>
         <View style={[styles.textBox]}>
@@ -55,6 +58,16 @@ const RegisterScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  back: {
+    width: "100%",
+    display: "flex",
+    color: "#9500FF",
+    fontSize: 36,
+    marginTop: 50,
+    textShadowColor: "#FFFFFF",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
+  },
   image: {
     flex: 1,
     justifyContent: "space-around",

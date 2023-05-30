@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,17 +7,31 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+// import db from "../firebaseConfig";
 
 const LoginScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
+  // useEffect(() => {
+  //   function getData() {
+  //     db.collection("users")
+  //       .get()
+  //       .then((querySnapshot) => {
+  //         querySnapshot.forEach((doc) => {
+  //           console.log(`${doc.id} => ${doc.data()}`);
+  //         });
+  //       });
+  //   }
+
+  //   getData();
+  // }, []);
+
   const handleLogin = () => {
-    console.log("Name:", name);
-    console.log("Password:", password);
+    navigation.navigate("Map");
   };
   const handleRegister = () => {
-    console.log("register:");
+    navigation.navigate("Register");
   };
 
   const cover = require("../../assets/cover.jpg");

@@ -4,6 +4,8 @@ import LoginScreen from "./src/login/LoginScreen";
 import RegisterScreen from "./src/register/RegisterScreen";
 import PointsScreen from "./src/points/PointsScreen";
 import React from "react";
+import ConfigurationScreen from "./src/configuration/ConfigurationScreen";
+import MapScreen from "./src/map/MapScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,9 +25,11 @@ export default function App() {
           header: () => {},
         }}
       >
-        <Stack.Screen name="Points" component={PointsScreen} />
-        <Stack.Screen name="Registrar" component={RegisterScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="Points" component={PointsScreen} />
+        <Stack.Screen name="Configuration" component={ConfigurationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -9,21 +9,17 @@ import {
 } from "react-native";
 
 const ConfigurationScreen = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-
   const handleLogout = () => {
-    console.log("Name:", name);
-    console.log("Password:", password);
+    navigation.navigate("Login");
   };
   const handleClear = () => {
-    console.log("register:");
+    console.log("clear");
   };
 
   const cover = require("../../assets/cover.jpg");
 
   return (
-    <ImageBackground source={cover} resizeMode="cover" style={styles.image}>
+    <View>
       <Text style={[styles.title]}>Configurações</Text>
       <View style={[styles.textBox]}>
         <View>
@@ -43,7 +39,7 @@ const ConfigurationScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -74,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
-    width: 140,
+    width: 300,
     height: 50,
     marginTop: 50,
   },

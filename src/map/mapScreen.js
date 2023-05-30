@@ -6,51 +6,49 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  Image,
 } from "react-native";
 
-const mapScreen = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-
+const MapScreen = ({ navigation }) => {
   const handlePoints = () => {
-    console.log("Name:", name);
-    console.log("Password:", password);
+    navigation.navigate("Points");
   };
   const handleConfig = () => {
-    console.log("register:");
+    navigation.navigate("Configuration");
   };
 
   const cover = require("../../assets/cover.jpg");
 
   return (
-    <ImageBackground source={cover} resizeMode="cover" style={styles.image}>
-      <Text style={[styles.title]}>Configurações</Text>
+    <View style={styles.content}>
+      <Image style={[styles.map]} source={require("../../assets/map.png")} />
       <View style={[styles.buttonBox]}>
         <TouchableOpacity
           style={[styles.button, styles.shadow]}
           onPress={handlePoints}
         >
-          <Text style={styles.buttonText}>Registrar</Text>
+          <Text style={styles.buttonText}>Pontos</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.shadow]}
           onPress={handleConfig}
         >
-          <Text style={styles.buttonText}>Configurações</Text>
+          <Text style={styles.buttonText}>Config</Text>
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    color: "#9500FF",
-    fontSize: 36,
-    marginTop: 50,
-    textShadowColor: "#FFFFFF",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 5,
+  content: {
+    flexDirection: "column",
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+  },
+  map: {
+    height: "80%",
   },
   textBox: {
     flexDirection: "column",
@@ -64,7 +62,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-around",
   },
-
   button: {
     backgroundColor: "#E8C8FF",
     alignItems: "center",
@@ -86,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default mapScreen;
+export default MapScreen;
