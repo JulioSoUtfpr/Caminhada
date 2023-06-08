@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { collection, getDocs } from "firebase/firestore";
+import db from "../firebaseConfig";
 
 const PointsScreen = ({ navigation }) => {
+  const [isLoading, setLoading] = useState(true);
   const [points, setPoints] = useState("");
 
-  // const getData = async () => {
-  //   try {
-  //     const response = fetch("http://localhost:3000/users");
-  //     const json = response.json();
-  //     console.log(json);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  const getData = () => {
-    fetch("http://localhost:3000/users")
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json.points);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const getPoints = async () => {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach((doc) => {
+      console.log(`${doc.id} => ${doc.data()}`);
+    });
   };
 
+  const getData = () => {
+    console.log(points);
+  };
   useEffect(() => {
-    getData();
+    getPoints();
   }, []);
 
   return (
