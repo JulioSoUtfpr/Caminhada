@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -8,27 +9,41 @@ import {
   ImageBackground,
 } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
+import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
-const ConfigurationScreen = ({ navigation }) => {
+const ConfigurationScreen = ({ route, navigation }) => {
+  const { uid } = route.params;
+
   const handleLogout = () => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        alert("Logout com sucesso");
-        navigation.navigate("Login");
+        AsyncStorage.clear().then(() => {
+          navigation.navigate("Login");
+        });
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log("error: ", error.message);
       });
   };
-  const handleClear = () => {
-    console.log("clear");
+
+  const handleClear = async () => {
+    await updateDoc(doc(db, "users", uid), {
+      points: 10,
+    });
   };
 
   const cover = require("../../assets/cover.jpg");
 
   return (
-    <View>
+    <View style={styles.content}>
+      <Text
+        style={[styles.back]}
+        onPress={() => navigation.navigate("Map", { uid: uid })}
+      >
+        back
+      </Text>
       <Text style={[styles.title]}>Configurações</Text>
       <View style={[styles.textBox]}>
         <View>
@@ -53,6 +68,21 @@ const ConfigurationScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  content: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+  },
+  back: {
+    width: "100%",
+    display: "flex",
+    color: "#9500FF",
+    fontSize: 36,
+    marginTop: 50,
+    textShadowColor: "#FFFFFF",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
+  },
   title: {
     color: "#9500FF",
     fontSize: 36,

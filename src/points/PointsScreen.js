@@ -1,43 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import {
-  addDoc,
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
-const PointsScreen = ({ navigation }) => {
-  const [isLoading, setLoading] = useState(true);
+const PointsScreen = ({ route, navigation }) => {
+  const { uid } = route.params;
   const [points, setPoints] = useState("");
-  const [nomes, setNomes] = useState("");
 
-  const getPoints = async () => {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data().points}`);
-    });
-  };
-
-  const getData = () => {
-    console.log(points);
-  };
   useEffect(() => {
     getPoints();
   }, []);
 
+  const getPoints = async () => {
+    await getDoc(doc(collection(db, "users"), uid)).then((value) => {
+      setPoints(value.data().points);
+    });
+  };
+
   return (
     <View style={styles.content}>
-      <Text style={[styles.back]} onPress={() => navigation.navigate("Map")}>
+      <Text
+        style={[styles.back]}
+        onPress={() => navigation.navigate("Map", { uid: uid })}
+      >
         back
       </Text>
       <Text style={[styles.title]}>Pontos</Text>
       <Text style={[styles.title]}>{points}</Text>
-      <Text style={[styles.title]} onPress={() => getPoints()}>
-        rq
-      </Text>
     </View>
   );
 };

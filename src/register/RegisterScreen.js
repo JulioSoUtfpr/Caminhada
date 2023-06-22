@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -16,6 +17,10 @@ const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  async function asyncSave(value) {
+    await AsyncStorage.setItem("uid", value);
+  }
+
   const handleRegister = async () => {
     const auth = getAuth();
     await createUserWithEmailAndPassword(auth, email, password)
@@ -24,8 +29,8 @@ const RegisterScreen = ({ navigation }) => {
           name: name,
           points: 0,
         });
-        console.log(userCredential.user);
-        navigation.navigate("Map");
+        asyncSave(userCredential.user.uid);
+        navigation.navigate("Map", { uid: userCredential.user.uid });
       })
       .catch((error) => {
         if (error.code == "auth/email-already-in-use") {

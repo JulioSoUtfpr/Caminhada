@@ -9,12 +9,14 @@ import {
   Image,
 } from "react-native";
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = ({ route, navigation }) => {
+  const { uid } = route.params;
+
   const handlePoints = () => {
-    navigation.navigate("Points");
+    navigation.navigate("Points", { uid: uid });
   };
   const handleConfig = () => {
-    navigation.navigate("Configuration");
+    navigation.navigate("Configuration", { uid: uid });
   };
 
   const cover = require("../../assets/cover.jpg");

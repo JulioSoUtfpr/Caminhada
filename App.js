@@ -3,9 +3,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./src/login/LoginScreen";
 import RegisterScreen from "./src/register/RegisterScreen";
 import PointsScreen from "./src/points/PointsScreen";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ConfigurationScreen from "./src/configuration/ConfigurationScreen";
 import MapScreen from "./src/map/MapScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,10 +26,11 @@ export default function App() {
           header: () => {},
         }}
       >
-        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Points" component={PointsScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+
         <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="Points" component={PointsScreen} />
         <Stack.Screen name="Configuration" component={ConfigurationScreen} />
       </Stack.Navigator>
     </NavigationContainer>

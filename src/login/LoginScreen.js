@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -9,15 +10,34 @@ import {
 } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ route, navigation }) => {
+  const [uid, setUid] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    asyncGet();
+  }, []);
+
+  async function asyncGet() {
+    await AsyncStorage.getItem("uid").then((value) => {
+      setUid(value);
+      if (value != "" && value != null) {
+        navigation.navigate("Map", { uid: value });
+      }
+    });
+  }
+
+  async function asyncSave(value) {
+    await AsyncStorage.setItem("uid", value);
+  }
 
   const handleLogin = () => {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        navigation.navigate("Map");
+        asyncSave(userCredential.user.uid);
+        navigation.navigate("Map", { uid: userCredential.user.uid });
       })
       .catch((error) => {
         if (error.code == "auth/invalid-email") {
