@@ -1,16 +1,69 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 const MapScreen = ({ route, navigation }) => {
   const { uid } = route.params;
+  const [lPoints, setLPoints] = useState(0);
+  const [location, setLocation] = useState("");
+  const [position, setPosition] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0029,
+    longitudeDelta: 0.0012,
+  });
+  const [markers, setMarkers] = useState([
+    {
+      key: 0,
+      latitude: -25.7041,
+      longitude: -53.0974,
+    },
+    {
+      key: 1,
+      latitude: -25.7035,
+      longitude: -53.0969,
+    },
+    {
+      key: 2,
+      latitude: -25.7032,
+      longitude: -53.0963,
+    },
+  ]);
+
+  const getPoints = async () => {
+    await getDoc(doc(collection(db, "users"), uid)).then((value) => {
+      addPoints(value.data().points);
+    });
+  };
+
+  async function addPoints(add) {
+    await updateDoc(doc(db, "users", uid), {
+      points: add + 50,
+    });
+  }
+
+  const checkLocation = (coords) => {
+    let removeInd = null;
+    markers.forEach((marker, index) => {
+      if (
+        Math.round(coords.latitude * 10000) / 10000 ==
+          Math.round(marker.latitude * 10000) / 10000 &&
+        Math.round(coords.longitude * 10000) / 10000 ==
+          Math.round(marker.longitude * 10000) / 10000
+      ) {
+        removeInd = index;
+      }
+    });
+    if (removeInd != null) {
+      markers.splice(removeInd, 1);
+      getPoints();
+
+      removeInd = null;
+    }
+  };
 
   const handlePoints = () => {
     navigation.navigate("Points", { uid: uid });
@@ -21,9 +74,57 @@ const MapScreen = ({ route, navigation }) => {
 
   const cover = require("../../assets/cover.jpg");
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setPosition({
+        ...position,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      setLocation(location);
+    })();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("awdwa");
+  // }, [location]);
+
   return (
     <View style={styles.content}>
-      <Image style={[styles.map]} source={require("../../assets/map.png")} />
+      <View style={[styles.mapContainer]}>
+        <MapView
+          showsUserLocation={true}
+          onUserLocationChange={(local) =>
+            checkLocation(local.nativeEvent.coordinate)
+          }
+          style={styles.map}
+          region={position}
+          onRegionChangeComplete={(region) => setPosition(region)}
+        >
+          {markers.map((coord, index) => {
+            return (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: coord.latitude,
+                  longitude: coord.longitude,
+                }}
+                pinColor="#9500FF"
+              ></Marker>
+            );
+          })}
+        </MapView>
+      </View>
+      <Text style={{ color: "white" }}>
+        {position.latitude} | {position.longitude}
+      </Text>
       <View style={[styles.buttonBox]}>
         <TouchableOpacity
           style={[styles.button, styles.shadow]}
@@ -49,8 +150,16 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
+  mapContainer: {
+    overflow: "hidden",
+    borderRadius: 10,
+    height: "75%",
+    width: "80%",
+    marginTop: 60,
+  },
   map: {
-    height: "80%",
+    height: "100%",
+    width: "100%",
   },
   textBox: {
     flexDirection: "column",

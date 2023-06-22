@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
@@ -28,10 +29,20 @@ const ConfigurationScreen = ({ route, navigation }) => {
       });
   };
 
-  const handleClear = async () => {
+  async function resetPoints() {
     await updateDoc(doc(db, "users", uid), {
-      points: 10,
+      points: 0,
     });
+  }
+
+  const handleClear = async () => {
+    Alert.alert("Atenção", "Deseja resetar seus pontos?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      { text: "Sim", onPress: () => resetPoints() },
+    ]);
   };
 
   const cover = require("../../assets/cover.jpg");
