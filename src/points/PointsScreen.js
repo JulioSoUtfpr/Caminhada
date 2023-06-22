@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
-import db from "../firebaseConfig";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 const PointsScreen = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
   const [points, setPoints] = useState("");
+  const [nomes, setNomes] = useState("");
 
   const getPoints = async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
     querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data()}`);
+      console.log(`${doc.id} => ${doc.data().points}`);
     });
   };
 
@@ -28,7 +35,7 @@ const PointsScreen = ({ navigation }) => {
       </Text>
       <Text style={[styles.title]}>Pontos</Text>
       <Text style={[styles.title]}>{points}</Text>
-      <Text style={[styles.title]} onPress={() => getData()}>
+      <Text style={[styles.title]} onPress={() => getPoints()}>
         rq
       </Text>
     </View>

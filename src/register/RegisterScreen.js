@@ -7,13 +7,34 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from "../firebaseConfig";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 const RegisterScreen = ({ navigation }) => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = () => {
-    navigation.navigate("Map");
+  const handleRegister = async () => {
+    const auth = getAuth();
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        setDoc(doc(collection(db, "users"), userCredential.user.uid), {
+          name: name,
+          points: 0,
+        });
+        console.log(userCredential.user);
+        navigation.navigate("Map");
+      })
+      .catch((error) => {
+        if (error.code == "auth/email-already-in-use") {
+          alert("Este e-mail já esta em uso");
+        } else if (error.code == "auth/weak-password") {
+          alert("Senha deve possuir 6 ou mais caracteres");
+        }
+        console.log(error.message);
+      });
   };
 
   const cover = require("../../assets/cover.jpg");
@@ -31,7 +52,15 @@ const RegisterScreen = ({ navigation }) => {
             <TextInput
               style={[styles.input, styles.shadow]}
               value={name}
-              onChangeText={(text) => setName(text)}
+              onChangeText={(value) => setName(value)}
+            />
+          </View>
+          <View>
+            <Text style={[styles.textShadow]}>E-mail</Text>
+            <TextInput
+              style={[styles.input, styles.shadow]}
+              value={email}
+              onChangeText={(value) => setEmail(value)}
             />
           </View>
           <View>
@@ -39,7 +68,7 @@ const RegisterScreen = ({ navigation }) => {
             <TextInput
               style={[styles.input, styles.shadow]}
               value={password}
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={(value) => setPassword(value)}
               secureTextEntry={true}
             />
           </View>
@@ -77,7 +106,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#9500FF",
     fontSize: 36,
-    marginTop: 50,
+    marginTop: 10,
     textShadowColor: "#FFFFFF",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 5,
@@ -98,6 +127,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
+    marginBottom: 30,
   },
   input: {
     color: "black",

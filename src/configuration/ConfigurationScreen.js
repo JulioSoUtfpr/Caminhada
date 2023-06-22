@@ -7,10 +7,19 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import { getAuth, signOut } from "firebase/auth";
 
 const ConfigurationScreen = ({ navigation }) => {
   const handleLogout = () => {
-    navigation.navigate("Login");
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        alert("Logout com sucesso");
+        navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
   const handleClear = () => {
     console.log("clear");

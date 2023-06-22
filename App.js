@@ -25,9 +25,9 @@ export default function App() {
           header: () => {},
         }}
       >
-        <Stack.Screen name="Points" component={PointsScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Points" component={PointsScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="Configuration" component={ConfigurationScreen} />
       </Stack.Navigator>

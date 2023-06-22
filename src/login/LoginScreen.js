@@ -7,31 +7,23 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-// import db from "../firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginScreen = ({ navigation }) => {
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // useEffect(() => {
-  //   function getData() {
-  //     db.collection("users")
-  //       .get()
-  //       .then((querySnapshot) => {
-  //         querySnapshot.forEach((doc) => {
-  //           console.log(`${doc.id} => ${doc.data()}`);
-  //         });
-  //       });
-  //   }
-
-  //   getData();
-  // }, []);
-
   const handleLogin = () => {
-    navigation.navigate("Map");
-  };
-  const handleRegister = () => {
-    navigation.navigate("Register");
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        navigation.navigate("Map");
+      })
+      .catch((error) => {
+        if (error.code == "auth/invalid-email") {
+          alert("E-mail invalido");
+        }
+      });
   };
 
   const cover = require("../../assets/cover.jpg");
@@ -42,11 +34,11 @@ const LoginScreen = ({ navigation }) => {
       <View style={[styles.content]}>
         <View style={[styles.textBox]}>
           <View>
-            <Text style={[styles.textShadow]}>Nome</Text>
+            <Text style={[styles.textShadow]}>E-mail</Text>
             <TextInput
               style={[styles.input, styles.shadow]}
-              value={name}
-              onChangeText={(text) => setName(text)}
+              value={email}
+              onChangeText={(text) => setEmail(text)}
             />
           </View>
           <View>
@@ -62,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={[styles.buttonBox]}>
           <TouchableOpacity
             style={[styles.button, styles.shadow]}
-            onPress={handleRegister}
+            onPress={() => navigation.navigate("Register")}
           >
             <Text style={styles.buttonText}>Registrar</Text>
           </TouchableOpacity>
