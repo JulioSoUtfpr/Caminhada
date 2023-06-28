@@ -1,6 +1,6 @@
 # OP-Mobile
 
-Iniciar o projeto com:
+Se inicia o projeto com:
 npm start
 
 Se não possuir um usuario cadastrado va para registrar, caso contrario realize o login;
