@@ -53,7 +53,7 @@ const ConfigurationScreen = ({ route, navigation }) => {
         style={[styles.back]}
         onPress={() => navigation.navigate("Map", { uid: uid })}
       >
-        back
+        Voltar
       </Text>
       <Text style={[styles.title]}>Configurações</Text>
       <View style={[styles.textBox]}>

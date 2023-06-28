@@ -23,11 +23,28 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     const auth = getAuth();
+    // let mark1x = (Math.floor( Math.random() * 22)/10000) + -25.7049;
+    // let mark1y = (Math.floor( Math.random() * 22)/10000) + -53.0961;
+    // let mark2 = Math.random();
+    // let mark3 = Math.random();
     await createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setDoc(doc(collection(db, "users"), userCredential.user.uid), {
-          name: name,
           points: 0,
+          markers: [
+            {
+              latitude: -25.7049 + Math.floor(Math.random() * 22) / 10000,
+              longitude: -53.0961 - Math.floor(Math.random() * 22) / 10000,
+            },
+            {
+              latitude: -25.7049 + Math.floor(Math.random() * 22) / 10000,
+              longitude: -53.0961 - Math.floor(Math.random() * 22) / 10000,
+            },
+            {
+              latitude: -25.7049 + Math.floor(Math.random() * 22) / 10000,
+              longitude: -53.0961 - Math.floor(Math.random() * 22) / 10000,
+            },
+          ],
         });
         asyncSave(userCredential.user.uid);
         navigation.navigate("Map", { uid: userCredential.user.uid });
@@ -47,19 +64,19 @@ const RegisterScreen = ({ navigation }) => {
   return (
     <ImageBackground source={cover} resizeMode="cover" style={styles.image}>
       <Text style={[styles.back]} onPress={() => navigation.navigate("Login")}>
-        back
+        Voltar
       </Text>
       <Text style={[styles.title]}>Registrar</Text>
       <View style={[styles.content]}>
         <View style={[styles.textBox]}>
-          <View>
+          {/* <View>
             <Text style={[styles.textShadow]}>Nome</Text>
             <TextInput
               style={[styles.input, styles.shadow]}
               value={name}
               onChangeText={(value) => setName(value)}
             />
-          </View>
+          </View> */}
           <View>
             <Text style={[styles.textShadow]}>E-mail</Text>
             <TextInput
@@ -98,6 +115,7 @@ const styles = StyleSheet.create({
     color: "#9500FF",
     fontSize: 36,
     marginTop: 50,
+    marginHorizontal: 10,
     textShadowColor: "#FFFFFF",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 5,

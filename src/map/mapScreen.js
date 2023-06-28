@@ -7,7 +7,6 @@ import { db } from "../firebaseConfig";
 
 const MapScreen = ({ route, navigation }) => {
   const { uid } = route.params;
-  const [lPoints, setLPoints] = useState(0);
   const [location, setLocation] = useState("");
   const [position, setPosition] = useState({
     latitude: 0,
@@ -17,21 +16,33 @@ const MapScreen = ({ route, navigation }) => {
   });
   const [markers, setMarkers] = useState([
     {
-      key: 0,
       latitude: -25.7041,
       longitude: -53.0974,
     },
     {
-      key: 1,
       latitude: -25.7035,
       longitude: -53.0969,
     },
     {
-      key: 2,
       latitude: -25.7032,
       longitude: -53.0963,
     },
   ]);
+
+  // [
+  //   {
+  //     latitude: -25.7041,
+  //     longitude: -53.0974,
+  //   },
+  //   {
+  //     latitude: -25.7035,
+  //     longitude: -53.0969,
+  //   },
+  //   {
+  //     latitude: -25.7032,
+  //     longitude: -53.0963,
+  //   },
+  // ]
 
   const getPoints = async () => {
     await getDoc(doc(collection(db, "users"), uid)).then((value) => {
@@ -39,14 +50,28 @@ const MapScreen = ({ route, navigation }) => {
     });
   };
 
+  const getMarkers = async () => {
+    await getDoc(doc(collection(db, "users"), uid)).then((value) => {
+      setMarkers(value.data().markers);
+    });
+  };
+
+  async function updateMarkers() {
+    await updateDoc(doc(db, "users", uid), {
+      markers: markers,
+    });
+    alert("50 pontos adicionados");
+  }
+
   async function addPoints(add) {
     await updateDoc(doc(db, "users", uid), {
       points: add + 50,
     });
+    alert("50 pontos adicionados");
   }
 
   const checkLocation = (coords) => {
-    let removeInd = null;
+    let removed = false;
     markers.forEach((marker, index) => {
       if (
         Math.round(coords.latitude * 10000) / 10000 ==
@@ -54,14 +79,20 @@ const MapScreen = ({ route, navigation }) => {
         Math.round(coords.longitude * 10000) / 10000 ==
           Math.round(marker.longitude * 10000) / 10000
       ) {
-        removeInd = index;
+        removed = true;
+        let newList = markers;
+        newList[index] = {
+          latitude: -25.7049 + Math.floor(Math.random() * 22) / 10000,
+          longitude: -53.0961 - Math.floor(Math.random() * 22) / 10000,
+        };
+        setMarkers(newList);
+        updateMarkers();
+        getPoints();
       }
     });
-    if (removeInd != null) {
-      markers.splice(removeInd, 1);
-      getPoints();
-
-      removeInd = null;
+    if (removed == true) {
+      // markers.splice(removeInd, 1);
+      // removeInd = null;
     }
   };
 
@@ -73,6 +104,10 @@ const MapScreen = ({ route, navigation }) => {
   };
 
   const cover = require("../../assets/cover.jpg");
+
+  useEffect(() => {
+    getMarkers();
+  }, []);
 
   useEffect(() => {
     (async () => {

@@ -23,7 +23,7 @@ const PointsScreen = ({ route, navigation }) => {
         style={[styles.back]}
         onPress={() => navigation.navigate("Map", { uid: uid })}
       >
-        back
+        Voltar
       </Text>
       <Text style={[styles.title]}>Pontos</Text>
       <Text style={[styles.title]}>{points}</Text>
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     color: "#9500FF",
     fontSize: 36,
     marginTop: 50,
+    marginHorizontal: 4,
     textShadowColor: "#FFFFFF",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 5,
